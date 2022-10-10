@@ -5,6 +5,7 @@ import (
 	"admin/src/routes"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 func main() {
@@ -12,16 +13,22 @@ func main() {
 	database.Connect()
 	// Migration
 	database.AutoMigrate()
+	// Redis
+	database.SetupRedis()
+	// Cache
+	database.SetupCacheChannel()
 
 	// fiber API
 	app := fiber.New()
 
+	// CORSの設定
+	app.Use(cors.New(cors.Config{
+		// 認証にcookieなどの情報を必要とするかどうか
+		AllowCredentials: true,
+	}))
+
 	// Setup Routes
 	routes.Setup(app)
-
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("My Name Is Self Note!!!")
-	})
 
 	app.Listen(":3000")
 }

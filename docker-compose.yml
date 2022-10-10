@@ -9,8 +9,12 @@ services:
       # DockerとローカルのFSをマウント
     volumes:
       - .:/app
+    # dbを先に起動させる
+    # ただし、初回起動時はDBの準備に手間取るので、コネクトに失敗する
+    # 可能性がある
     depends_on:
       - db
+      - redis
 
   db:
     image: mysql:5.7.22
@@ -25,3 +29,14 @@ services:
       - .dbdata:/var/lib/mysql
     ports:
       - 33066:3306
+
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+
+  smtp:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"

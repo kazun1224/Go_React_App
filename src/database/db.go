@@ -25,5 +25,5 @@ func Connect() {
 
 func AutoMigrate() {
 	// User構造体に沿ってテーブルのスキーマーを作成する
-	DB.AutoMigrate(models.User{})
+	DB.AutoMigrate(models.User{}, models.Product{}, models.Link{}, models.Order{}, models.OrderItem{})
 }
